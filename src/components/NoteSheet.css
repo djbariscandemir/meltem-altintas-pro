@@ -1,0 +1,126 @@
+.note-sheet-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  animation: fadeIn 0.2s;
+}
+
+.note-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  z-index: 2001;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUpSheet 0.3s;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.note-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.note-sheet-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.note-sheet-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-sheet-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.note-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.note-textarea:focus {
+  border-color: #0a84ff;
+}
+
+.note-sheet-actions {
+  padding: 16px 20px 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.note-save-btn {
+  width: 100%;
+  padding: 16px;
+  background: #0a84ff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.note-save-btn:active {
+  background: #0066cc;
+  transform: scale(0.98);
+}
+
+@media (min-width: 768px) {
+  .note-sheet {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    animation: modalFadeIn 0.3s;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 100%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+}

@@ -1,0 +1,138 @@
+.game-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  min-height: calc(100vh - 200px);
+  justify-content: center;
+}
+
+.game-card {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.game-card-image {
+  position: relative;
+  width: 100%;
+  padding-top: 150%;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.game-card-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.opportunity-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 165, 0, 0.95);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-card-info {
+  padding: 20px;
+}
+
+.game-card-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0a84ff;
+  margin-bottom: 12px;
+}
+
+.game-card-details {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #666;
+}
+
+.game-card-details span {
+  display: flex;
+  align-items: center;
+}
+
+.game-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 16px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.skip-btn {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.skip-btn:active {
+  background: #e0e0e0;
+  transform: scale(0.98);
+}
+
+.opportunity-btn {
+  background: #fff;
+  color: #ff9500;
+  border: 2px solid #ff9500;
+}
+
+.opportunity-btn.active {
+  background: #ff9500;
+  color: #fff;
+}
+
+.opportunity-btn:active {
+  transform: scale(0.98);
+}
+
+.detail-btn {
+  background: #0a84ff;
+  color: #fff;
+}
+
+.detail-btn:active {
+  background: #0066cc;
+  transform: scale(0.98);
+}
+
+.game-progress {
+  font-size: 14px;
+  color: #999;
+  font-weight: 500;
+}
+
+.game-mode-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #999;
+  font-size: 16px;
+}

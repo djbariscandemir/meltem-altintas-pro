@@ -1,0 +1,254 @@
+.revy-excel-import {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.existing-listings-info {
+  background: #e8f4fd;
+  border: 1px solid #b3d9f2;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #0066cc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.existing-listings-info strong {
+  font-weight: 600;
+  color: #0052a3;
+}
+
+.import-header {
+  margin-bottom: 32px;
+}
+
+.import-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.import-subtitle {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.import-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.file-upload-section {
+  margin-bottom: 24px;
+}
+
+.file-input-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border: 3px dashed #e0e0e0;
+  border-radius: 16px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-input-label:hover {
+  border-color: #0a84ff;
+  background: #f0f7ff;
+}
+
+.file-input-label:active {
+  transform: scale(0.98);
+}
+
+.file-input-icon {
+  font-size: 48px;
+  flex-shrink: 0;
+}
+
+.file-input-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.file-input-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.file-input-subtitle {
+  font-size: 14px;
+  color: #999;
+}
+
+.file-input {
+  display: none;
+}
+
+.error-message {
+  background: #fff5f5;
+  border: 2px solid #ff3b30;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  color: #721c24;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.success-message {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 2px solid #34c759;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.success-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.success-content {
+  flex: 1;
+}
+
+.success-content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #155724;
+  margin-bottom: 16px;
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+}
+
+.stat-item.total {
+  background: #0a84ff;
+  color: #fff;
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+  text-align: center;
+}
+
+.expected-format {
+  background: #f5f6f8;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.expected-format h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.expected-format ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.expected-format li {
+  font-size: 13px;
+  color: #666;
+  padding: 8px 12px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.upload-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+}
+
+.upload-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 132, 255, 0.4);
+}
+
+.upload-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.upload-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .import-card {
+    padding: 24px;
+  }
+
+  .file-input-label {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .file-input-icon {
+    font-size: 40px;
+  }
+
+  .result-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .expected-format ul {
+    grid-template-columns: 1fr;
+  }
+}

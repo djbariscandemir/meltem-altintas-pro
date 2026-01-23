@@ -1,0 +1,176 @@
+.imports-management {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.imports-header {
+  margin-bottom: 30px;
+}
+
+.imports-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.imports-subtitle {
+  color: #666;
+  font-size: 14px;
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 16px;
+  font-size: 18px;
+  color: #666;
+}
+
+.error-state {
+  color: #d32f2f;
+}
+
+.no-imports {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  background: #f5f5f5;
+  border-radius: 12px;
+  gap: 16px;
+}
+
+.no-imports-icon {
+  font-size: 64px;
+  margin-bottom: 8px;
+}
+
+.no-imports p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.no-imports-hint {
+  font-size: 14px;
+  color: #999;
+  margin-top: 8px;
+}
+
+.imports-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.import-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.import-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.import-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.import-card-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.import-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.import-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #333;
+  word-break: break-word;
+}
+
+.import-card-meta {
+  font-size: 12px;
+  color: #999;
+}
+
+.import-card-meta span {
+  display: inline-block;
+}
+
+.delete-import-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.delete-import-btn:hover {
+  background: #f5f5f5;
+}
+
+.import-card-stats {
+  display: flex;
+  gap: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .imports-list {
+    grid-template-columns: 1fr;
+  }
+
+  .import-card-stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .stat-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

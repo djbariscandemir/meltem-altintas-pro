@@ -1,0 +1,122 @@
+.listings-view {
+  width: 100%;
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.listings-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.listings-count {
+  font-size: 14px;
+  color: var(--color-gray-700);
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-gray-100);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-gray-200);
+}
+
+.listings-content {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.listings-main {
+  min-width: 0;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.empty-state-logo-wrapper {
+  width: auto;
+  height: 80px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.empty-state-logo {
+  max-height: 80px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+.empty-state-logo.logo-loaded {
+  opacity: 1;
+}
+
+.empty-state-logo.logo-error {
+  display: none;
+}
+
+.empty-state-logo-fallback {
+  display: block;
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.empty-state-title {
+  font-size: 24px;
+  font-weight: var(--font-weight-semibold);
+  color: #424242;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+}
+
+.empty-state-text {
+  font-size: 16px;
+  color: #616161;
+  margin: 0;
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .listings-content {
+    grid-template-columns: 240px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .listings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .listings-view-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .listings-count {
+    text-align: center;
+  }
+}

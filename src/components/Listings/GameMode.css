@@ -1,0 +1,265 @@
+.game-mode-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--color-gray-500);
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.game-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  min-height: calc(100vh - 300px);
+  justify-content: center;
+  padding: var(--spacing-xl) 0;
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.game-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  border: 1px solid var(--color-gray-200);
+  transition: all var(--transition-base);
+}
+
+.game-card:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px);
+}
+
+.custom-stock-badge {
+  position: absolute;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  background: var(--color-primary);
+  color: var(--color-white);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  z-index: 5;
+  box-shadow: var(--shadow-md);
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.custom-stock-badge svg {
+  color: var(--color-white);
+  flex-shrink: 0;
+}
+
+.game-card-image {
+  position: relative;
+  width: 100%;
+  padding-top: 150%;
+  background: var(--color-gray-50, #f9fafb);
+  overflow: hidden;
+}
+
+.game-card-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-card-image .logo-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-gray-50, #f9fafb);
+}
+
+.opportunity-badge {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: var(--color-warning);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
+}
+
+.opportunity-badge svg {
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.game-card-info {
+  padding: 20px;
+}
+
+.game-card-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0a84ff;
+  margin-bottom: 12px;
+}
+
+.game-card-details {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #666;
+}
+
+.game-card-details span {
+  display: flex;
+  align-items: center;
+}
+
+.game-card-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.game-card-category {
+  font-size: 13px;
+  color: #616161;
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.game-card-category svg {
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.game-card-source {
+  font-size: 13px;
+  color: #616161;
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.game-card-source svg {
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.game-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 16px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: var(--spacing-md);
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn svg {
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.skip-btn {
+  background: var(--color-gray-50, #f9fafb);
+  color: var(--color-gray-700);
+}
+
+.skip-btn:hover {
+  background: var(--color-gray-200);
+  color: var(--color-secondary);
+}
+
+.skip-btn:active {
+  transform: scale(0.97);
+  background: var(--color-gray-300);
+}
+
+.opportunity-btn {
+  background: var(--color-white);
+  color: var(--color-warning);
+  border: 1.5px solid var(--color-warning);
+}
+
+.opportunity-btn:hover {
+  background: var(--color-warning-light);
+}
+
+.opportunity-btn.active {
+  background: var(--color-warning);
+  color: var(--color-white);
+  box-shadow: var(--shadow-md);
+}
+
+.opportunity-btn.active:hover {
+  background: #FF8800;
+}
+
+.opportunity-btn:active {
+  transform: scale(0.97);
+}
+
+.detail-btn {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.detail-btn:hover {
+  background: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+.detail-btn:active {
+  transform: scale(0.97);
+}
+
+.game-progress {
+  font-size: 14px;
+  color: #999;
+  font-weight: 500;
+}
+
+.game-mode-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #999;
+  font-size: 16px;
+}
