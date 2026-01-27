@@ -1,0 +1,231 @@
+.broker-panel {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.broker-panel-loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-gray-600);
+}
+
+.broker-panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.broker-panel-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-secondary);
+  margin: 0;
+}
+
+.broker-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.broker-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin: 0 0 var(--spacing-md);
+}
+
+.broker-summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.broker-summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-200);
+  min-width: 100px;
+}
+
+.broker-summary-card span {
+  font-size: 13px;
+  color: var(--color-gray-600);
+}
+
+.broker-summary-card strong {
+  font-size: 18px;
+  color: var(--color-secondary);
+}
+
+.broker-consultant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.broker-consultant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.broker-consultant-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.broker-consultant-card.selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(234, 126, 101, 0.2);
+}
+
+.broker-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.broker-card-name {
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+
+.broker-card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--color-gray-600);
+}
+
+.broker-card-stats strong {
+  color: var(--color-secondary);
+}
+
+.broker-empty {
+  color: var(--color-gray-500);
+  font-size: 14px;
+  margin: 0;
+}
+
+.broker-role-requests {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.broker-role-request-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-gray-50);
+  gap: var(--spacing-md);
+}
+
+.broker-role-request-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.broker-role-request-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-secondary);
+}
+
+.broker-role-request-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  font-size: 12px;
+  color: var(--color-gray-600);
+}
+
+.broker-role-request-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.broker-role-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  background: var(--color-gray-200);
+  color: var(--color-gray-800);
+}
+
+.broker-role-btn.approve {
+  background: #16a34a;
+  color: #ecfdf5;
+}
+
+.broker-role-btn.reject {
+  background: #f97316;
+  color: #fffbeb;
+}
+
+.broker-role-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.broker-detail-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.broker-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.broker-detail-table th,
+.broker-detail-table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.broker-detail-table th {
+  background: var(--color-gray-50);
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+.broker-detail-table tr:last-child td {
+  border-bottom: none;
+}
+
+.broker-detail-table td {
+  color: var(--color-gray-700);
+}

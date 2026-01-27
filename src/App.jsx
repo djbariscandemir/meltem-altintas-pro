@@ -1,20 +1,27 @@
 import { useState, useEffect, useRef } from 'react'
 import Login from './components/Login/Login'
+import Signup from './components/Signup/Signup'
 import Dashboard from './components/Dashboard/Dashboard'
+import ToastContainer from './components/Toast/ToastContainer'
 import { storage, STORAGE_KEYS } from './utils/storage'
+import { supabase } from './utils/supabase'
 import { fetchAllListings } from './services/listingsRepository'
 import { fetchAllNotes } from './services/notesRepository'
+import { fetchProfileByUserId, upsertProfile } from './services/profilesRepository'
 import { generateCallTasks, generateNotifications } from './data/mockData'
 import './App.css'
 
 function App() {
   const [user, setUser] = useState(null)
+  const [role, setRole] = useState(null)
+  const [profileLoading, setProfileLoading] = useState(false)
   const [listings, setListings] = useState([])
   const [tasks, setTasks] = useState([])
   const [buyerRequests, setBuyerRequests] = useState([])
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
-  
+  const [authView, setAuthView] = useState('login')
+
   // useRef guard: React 18 StrictMode double invoke'u önlemek için
   const hasLoaded = useRef(false)
 
@@ -27,6 +34,17 @@ function App() {
     const savedUser = storage.get(STORAGE_KEYS.USER)
     if (savedUser) {
       setUser(savedUser)
+      // Uygulama açılışında profile'dan rolü yenile
+      ;(async () => {
+        const profile = await ensureProfileForUser(savedUser)
+        if (!profile) {
+          setRole(null)
+          return
+        }
+        const finalUser = mergeUserWithProfileRole(savedUser, profile)
+        setUser(finalUser)
+        storage.set(STORAGE_KEYS.USER, finalUser)
+      })()
     }
 
     // Load data from Supabase (sadece 1 kez)
@@ -114,17 +132,85 @@ function App() {
     }
   }
 
-  const handleLogin = (loggedInUser) => {
-    setUser(loggedInUser)
-    // Reload notifications for this user
+  const ensureProfileForUser = async (appUser) => {
+    try {
+      if (!appUser?.id) {
+        setProfileLoading(false)
+        return null
+      }
+
+      setProfileLoading(true)
+      const existing = await fetchProfileByUserId(appUser.id)
+      if (existing) {
+        const resolvedRole = (existing.role ?? existing.rol) ?? 'user'
+        console.log('[AUTH] profile full:', existing)
+        console.log('[AUTH] profile.role:', existing.role ?? existing.rol)
+        console.log('[AUTH] resolved role:', resolvedRole)
+        console.log('[AUTH] isProfileLoading:', false)
+        setRole(resolvedRole)
+        setProfileLoading(false)
+        return existing
+      }
+
+      const payload = {
+        id: appUser.id,
+        ad: appUser.firstName || null,
+        soyad: appUser.lastName || null,
+        email: appUser.email || '',
+        telefon: null,
+        dogum_tarihi: null,
+        rol: appUser.role || 'user',
+        calisma_baslangic_tarihi: null,
+        sorumlu_bolgeler: null
+      }
+
+      const created = await upsertProfile(payload)
+      const resolvedRole = (created.role ?? created.rol) ?? 'user'
+      console.log('[AUTH] profile full:', created)
+      console.log('[AUTH] profile.role:', created.role ?? created.rol)
+      console.log('[AUTH] resolved role:', resolvedRole)
+      console.log('[AUTH] isProfileLoading:', false)
+      setRole(resolvedRole)
+      setProfileLoading(false)
+      return created
+    } catch (e) {
+      console.warn('[App] ensureProfileForUser error:', e)
+      setRole(null)
+      setProfileLoading(false)
+      return null
+    }
+  }
+
+  const mergeUserWithProfileRole = (appUser, profile) => {
+    const roleFromProfile = (profile?.role ?? profile?.rol) ?? 'user'
+    const finalUser = { ...appUser, role: roleFromProfile }
+    if (import.meta.env.DEV) {
+      console.log('[AUTH] current role:', roleFromProfile)
+    }
+    return finalUser
+  }
+
+  const handleLogin = async (loggedInUser) => {
+    const profile = await ensureProfileForUser(loggedInUser)
+    const finalUser = mergeUserWithProfileRole(loggedInUser, profile)
+    setUser(finalUser)
+    storage.set(STORAGE_KEYS.USER, finalUser)
     const allNotifications = storage.get(STORAGE_KEYS.NOTIFICATIONS) || []
-    const userNotifications = allNotifications.filter(n => n.userId === loggedInUser.id)
+    const userNotifications = allNotifications.filter(n => n.userId === finalUser.id)
     setNotifications(userNotifications)
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+    } catch (_) {}
     storage.remove(STORAGE_KEYS.USER)
     setUser(null)
+  }
+
+  const handleProfileUpdate = (updatedUser) => {
+    setUser(updatedUser)
+    storage.set(STORAGE_KEYS.USER, updatedUser)
   }
 
   /**
@@ -191,10 +277,24 @@ function App() {
   }
 
   if (!user) {
-    return <Login onLogin={handleLogin} />
+    if (authView === 'signup') {
+      return (
+        <Signup
+          onSignup={handleLogin}
+          onGoToLogin={() => setAuthView('login')}
+        />
+      )
+    }
+    return (
+      <Login
+        onLogin={handleLogin}
+        onGoToSignup={() => setAuthView('signup')}
+      />
+    )
   }
 
-  if (loading) {
+  // Sadece fetch süresince loading göster
+  if (loading || profileLoading) {
     return (
       <div style={{ 
         display: 'flex', 
@@ -210,19 +310,48 @@ function App() {
     )
   }
 
+  // Dashboard erişimi: sadece broker ve admin
+  if (user && role !== 'admin' && role !== 'broker') {
+    if (import.meta.env.DEV) {
+      console.log('[AUTH] current role (no dashboard):', role)
+    }
+    return (
+      <>
+        <ToastContainer />
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <div style={{ fontSize: '20px', fontWeight: 600 }}>Bu ekran sadece broker ve admin kullanıcılar içindir.</div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>
+            Lütfen yetkili bir kullanıcıdan size uygun rolü atamasını isteyin.
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
-    <Dashboard
-      user={user}
-      listings={listings}
-      tasks={tasks}
-      buyerRequests={buyerRequests}
-      notifications={notifications}
-      onLogout={handleLogout}
-      onUpdateListings={updateListings}
-      onUpdateTasks={updateTasks}
-      onUpdateBuyerRequests={updateBuyerRequests}
-      onUpdateNotifications={updateNotifications}
-    />
+    <>
+      <ToastContainer />
+      <Dashboard
+        user={user}
+        listings={listings}
+        tasks={tasks}
+        buyerRequests={buyerRequests}
+        notifications={notifications}
+        onLogout={handleLogout}
+        onProfileUpdate={handleProfileUpdate}
+        onUpdateListings={updateListings}
+        onUpdateTasks={updateTasks}
+        onUpdateBuyerRequests={updateBuyerRequests}
+        onUpdateNotifications={updateNotifications}
+      />
+    </>
   )
 }
 

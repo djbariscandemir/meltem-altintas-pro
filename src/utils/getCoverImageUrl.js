@@ -3,42 +3,26 @@
 
 /**
  * Listing kartı için kapak fotoğrafı URL'ini döndürür
- * 
- * Öncelik sırası:
- * 1. cover_image_url (varsa ve geçerliyse)
- * 2. image_urls[0] (cover_image_url yoksa ama image_urls varsa)
- * 3. null (hiçbiri yoksa)
- * 
- * @param {Object} listing - Listing objesi
- * @param {string|null} listing.cover_image_url - Kapak fotoğrafı URL'i
- * @param {string[]|null} listing.image_urls - Fotoğraf URL'leri array'i
- * @returns {string|null} - Kapak fotoğrafı URL'i veya null
+ *
+ * Öncelik: cover_image_url → image_urls[0] → photos[0] → null
  */
 export function getCoverImageUrl(listing) {
-  // 1. cover_image_url varsa ve geçerliyse onu kullan
   if (
     listing.cover_image_url &&
     typeof listing.cover_image_url === 'string' &&
     listing.cover_image_url.startsWith('http')
   ) {
-    return listing.cover_image_url;
+    return listing.cover_image_url
   }
-
-  // 2. cover_image_url yoksa ama image_urls varsa, ilk fotoğrafı kullan
-  if (
-    Array.isArray(listing.image_urls) &&
-    listing.image_urls.length > 0
-  ) {
-    const firstImage = listing.image_urls[0];
-    if (
-      firstImage &&
-      typeof firstImage === 'string' &&
-      firstImage.startsWith('http')
-    ) {
-      return firstImage;
-    }
+  const urls = Array.isArray(listing.image_urls) ? listing.image_urls : []
+  if (urls.length > 0) {
+    const first = urls[0]
+    if (first && typeof first === 'string' && first.startsWith('http')) return first
   }
-
-  // 3. Hiçbiri yoksa null döndür (placeholder gösterilecek)
-  return null;
+  const photos = Array.isArray(listing.photos) ? listing.photos : []
+  if (photos.length > 0) {
+    const first = photos[0]
+    if (first && typeof first === 'string' && first.startsWith('http')) return first
+  }
+  return null
 }

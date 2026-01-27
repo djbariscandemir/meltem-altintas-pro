@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Clock } from 'lucide-react'
 import { fetchAllNotes, insertNote, updateNote, deleteNote } from '../../services/notesRepository'
+import { toast } from '../Toast/ToastContainer'
+import EmptyState from '../EmptyState/EmptyState'
 import './Notes.css'
 
 function Notes({ user, listings, onUpdateListings }) {
@@ -75,6 +77,7 @@ function Notes({ user, listings, onUpdateListings }) {
       console.log('[Notes] Notlar yeniden yükleniyor...')
       await loadNotes()
       
+      toast.success(selectedNote.id ? 'Not güncellendi' : 'Not kaydedildi')
       setNoteText('')
       setReminderDate('')
       setReminderTime('')
@@ -84,7 +87,7 @@ function Notes({ user, listings, onUpdateListings }) {
       console.error('[Notes] ❌ handleSaveNote ERROR:', error)
       console.error('[Notes] Error message:', error.message)
       console.error('[Notes] Error stack:', error.stack)
-      alert('Not kaydedilirken hata oluştu: ' + (error.message || 'Bilinmeyen hata'))
+      toast.error('Not kaydedilirken bir hata oluştu')
     }
   }
 
@@ -92,6 +95,7 @@ function Notes({ user, listings, onUpdateListings }) {
     try {
       await deleteNote(noteId)
       await loadNotes()
+      toast.success('Not silindi')
       setSelectedNote(null)
       setNoteText('')
       setReminderDate('')
@@ -100,6 +104,7 @@ function Notes({ user, listings, onUpdateListings }) {
       if (import.meta.env.DEV) {
         console.error('[Notes] handleDeleteNote error:', error)
       }
+      toast.error('Not silinirken bir hata oluştu')
     }
   }
 
@@ -183,22 +188,7 @@ function Notes({ user, listings, onUpdateListings }) {
         <div className="notes-list">
           <h3>Notlar ({notes.length})</h3>
           {notes.length === 0 ? (
-            <div className="notes-empty-state">
-              <div className="empty-state-logo-wrapper">
-                <img 
-                  src="/logo.png" 
-                  alt="Meltem Altıntaş Pro" 
-                  className="empty-state-logo"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                    e.currentTarget.nextElementSibling.style.display = 'block'
-                  }}
-                />
-                <span className="empty-state-logo-fallback" style={{ display: 'none' }}>Meltem Altıntaş Pro</span>
-              </div>
-              <h3 className="empty-state-title">Henüz not eklenmemiş</h3>
-              <p className="empty-state-text">İlk notunuzu ekleyerek başlayın</p>
-            </div>
+            <EmptyState type="notes" />
           ) : (
             <div className="notes-list-items">
               {notes.map(note => (

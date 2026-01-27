@@ -55,16 +55,17 @@ BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_notes_updated_at 
-  BEFORE UPDATE ON notes 
-  FOR EACH ROW 
+DROP TRIGGER IF EXISTS update_notes_updated_at ON notes;
+CREATE TRIGGER update_notes_updated_at
+  BEFORE UPDATE ON notes
+  FOR EACH ROW
   EXECUTE FUNCTION update_notes_updated_at_column();
 
 -- RLS (Row Level Security) politikaları
 ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 
--- Herkese okuma/yazma izni (ileride daha sıkı politikalar eklenebilir)
+DROP POLICY IF EXISTS "Allow all operations on notes" ON notes;
 CREATE POLICY "Allow all operations on notes" ON notes
   FOR ALL USING (true) WITH CHECK (true);

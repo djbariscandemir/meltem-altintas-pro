@@ -51,6 +51,17 @@ const supabaseStorage = supabase;
 // Supabase Storage bucket adı
 const STORAGE_BUCKET = 'listing-images';
 
+// Çalışma saatleri (09:00 - 22:00)
+const WORK_START_HOUR = 9;
+const WORK_END_HOUR = 22;
+
+// Günlük maksimum ilan limiti
+const DAILY_MAX_LISTINGS = 100;
+
+// HTTP istekleri arası global delay (saniye)
+const HTTP_DELAY_MIN = 3;
+const HTTP_DELAY_MAX = 7;
+
 // ========== FORCE RUN KONTROLÜ ==========
 const FORCE_RUN =
   process.env.FORCE_RUN === "true" ||
@@ -71,6 +82,10 @@ function randomDelay(min, max) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function humanHttpDelay() {
+  await randomDelay(HTTP_DELAY_MIN, HTTP_DELAY_MAX);
+}
+
 function isWithinWorkingHours() {
   // FORCE_RUN aktifse her zaman true dön
   if (FORCE_RUN) {
@@ -79,24 +94,7 @@ function isWithinWorkingHours() {
 
   const now = new Date();
   const hour = now.getHours();
-  const minute = now.getMinutes();
-  const timeInMinutes = hour * 60 + minute;
-
-  // 01:00 - 06:00 arası KESİNLİKLE çalışmayacak
-  if (hour >= 1 && hour < 6) {
-    return false;
-  }
-
-  // 09:30 - 12:30
-  const morningStart = 9 * 60 + 30; // 09:30
-  const morningEnd = 12 * 60 + 30;   // 12:30
-
-  // 14:00 - 18:30
-  const afternoonStart = 14 * 60;    // 14:00
-  const afternoonEnd = 18 * 60 + 30; // 18:30
-
-  return (timeInMinutes >= morningStart && timeInMinutes <= morningEnd) ||
-         (timeInMinutes >= afternoonStart && timeInMinutes <= afternoonEnd);
+  return hour >= WORK_START_HOUR && hour < WORK_END_HOUR;
 }
 
 function getNextWorkingWindow() {
@@ -104,43 +102,25 @@ function getNextWorkingWindow() {
   const hour = now.getHours();
   const minute = now.getMinutes();
   const timeInMinutes = hour * 60 + minute;
+  const startMinutes = WORK_START_HOUR * 60;
+  const endMinutes = WORK_END_HOUR * 60;
 
-  // Eğer şu an çalışma saatindeyse, hemen dön
-  if (isWithinWorkingHours()) {
+  // Çalışma saatindeyse bekleme yok
+  if (timeInMinutes >= startMinutes && timeInMinutes < endMinutes) {
     return 0;
   }
 
-  // 01:00 - 06:00 arasındaysa, 06:00'a kadar bekle
-  if (hour >= 1 && hour < 6) {
-    const nextHour = 6;
-    const nextMinute = 0;
-    const nextTime = new Date(now);
-    nextTime.setHours(nextHour, nextMinute, 0, 0);
-    return nextTime.getTime() - now.getTime();
-  }
-
-  // 06:00 - 09:30 arasındaysa, 09:30'a kadar bekle
-  if (hour >= 6 && (hour < 9 || (hour === 9 && minute < 30))) {
-    const nextHour = 9;
-    const nextMinute = 30;
-    const nextTime = new Date(now);
-    nextTime.setHours(nextHour, nextMinute, 0, 0);
-    return nextTime.getTime() - now.getTime();
-  }
-
-  // 12:30 - 14:00 arasındaysa, 14:00'a kadar bekle
-  if ((hour === 12 && minute >= 30) || (hour === 13) || (hour === 14 && minute === 0)) {
-    const nextHour = 14;
-    const nextMinute = 0;
-    const nextTime = new Date(now);
-    nextTime.setHours(nextHour, nextMinute, 0, 0);
-    return nextTime.getTime() - now.getTime();
-  }
-
-  // 18:30 sonrası veya 00:00 - 01:00 arası, yarın 09:30'a kadar bekle
   const nextTime = new Date(now);
+
+  // Sabah öncesindeyse bugün 09:00'a kadar bekle
+  if (timeInMinutes < startMinutes) {
+    nextTime.setHours(WORK_START_HOUR, 0, 0, 0);
+    return nextTime.getTime() - now.getTime();
+  }
+
+  // Akşam sonrasındaysa yarın 09:00'a kadar bekle
   nextTime.setDate(nextTime.getDate() + 1);
-  nextTime.setHours(9, 30, 0, 0);
+  nextTime.setHours(WORK_START_HOUR, 0, 0, 0);
   return nextTime.getTime() - now.getTime();
 }
 
@@ -181,8 +161,8 @@ class BatchState {
 
     // Günlük limit kontrolü
     this.resetCountersIfNeeded();
-    if (this.dailyProcessed >= 100) {
-      return { canStart: false, reason: 'Günlük limit (100 ilan) doldu' };
+    if (this.dailyProcessed >= DAILY_MAX_LISTINGS) {
+      return { canStart: false, reason: `Günlük limit (${DAILY_MAX_LISTINGS} ilan) doldu` };
     }
 
     // Saatlik limit kontrolü
@@ -311,6 +291,7 @@ async function login(page, hasStorageState = false) {
   try {
     // 1. Ana sayfayı aç
     console.log('REVY_HOME_OPENED');
+    await humanHttpDelay();
     await page.goto(REVY_BASE_URL, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
 
@@ -538,6 +519,7 @@ async function simulateHumanBehavior(page) {
 async function scrapeListingFromDetailPage(page, listingUrl) {
   try {
     // Sayfaya git
+    await humanHttpDelay();
     await page.goto(listingUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await randomDelay(1, 2);
 
@@ -1178,6 +1160,7 @@ async function uploadImageToSupabase(page, imageUrl, listingId, imageIndex) {
     let imageBuffer = null;
     try {
       // page.request kullan (sayfayı değiştirmez, sadece request yapar)
+      await humanHttpDelay();
       const response = await page.request.get(imageUrl, {
         timeout: 30000
       });
@@ -1727,6 +1710,7 @@ async function getNewListingsFromPortfolio(page, maxPages = 3, maxListingsPerPag
 
   const portfolioUrl = `${REVY_BASE_URL}/app/portfoy/ilanlar?export=0&fsbo=true&tab=all&area=my&advertisement_status=active`;
 
+  await humanHttpDelay();
   await page.goto(portfolioUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await randomDelay(2, 4);
 
@@ -1790,7 +1774,7 @@ async function getNewListingsFromPortfolio(page, maxPages = 3, maxListingsPerPag
               { timeout: 15000 }
             )
           ]);
-          await randomDelay(20, 40); // Sayfa değişimi bekleme
+          await randomDelay(20, 40); // Sayfa değişimi bekleme (sayfa geçişi için ekstra)
           currentPage++;
         } else {
           break;

@@ -3,6 +3,7 @@ import CustomStockForm from './CustomStockForm'
 import { Star, Trash2 } from 'lucide-react'
 import { getCoverImageUrl } from '../../utils/getCoverImageUrl'
 import LogoPlaceholder from '../LogoPlaceholder'
+import EmptyState from '../EmptyState/EmptyState'
 import './CustomStock.css'
 
 // Image component with logo fallback
@@ -72,9 +73,7 @@ function CustomStock({ user, listings, onUpdateListings }) {
 
       <div className="custom-stock-list">
         {customStockListings.length === 0 ? (
-          <div className="no-stock">
-            <p>Henüz özel stok ilanı bulunmuyor</p>
-          </div>
+          <EmptyState type="customStock" />
         ) : (
           customStockListings.map(listing => {
             // Development'ta debug logging

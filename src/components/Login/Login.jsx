@@ -1,88 +1,85 @@
 import { useState, useEffect } from 'react'
-import { mockUsers } from '../../data/mockData'
+import { supabase } from '../../utils/supabase'
+import { buildUserFromAuth } from '../../utils/authHelpers'
 import { storage, STORAGE_KEYS } from '../../utils/storage'
+import AppLogo from '../AppLogo/AppLogo'
 import './Login.css'
 
-function Login({ onLogin }) {
-  const [username, setUsername] = useState('')
+function Login({ onLogin, onGoToSignup }) {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setLoading(true)
 
-    const user = mockUsers.find(
-      u => (u.username === username || u.email === username) && u.password === password
-    )
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password
+      })
 
-    if (!user) {
-      setError('Kullanıcı adı veya şifre hatalı!')
-      return
+      if (authError) {
+        setError(authError.message || 'E-posta veya şifre hatalı.')
+        setLoading(false)
+        return
+      }
+
+      if (!data?.user) {
+        setError('Giriş yapılamadı.')
+        setLoading(false)
+        return
+      }
+
+      const appUser = buildUserFromAuth(data.user)
+      if (!appUser) {
+        setError('Kullanıcı bilgisi alınamadı.')
+        setLoading(false)
+        return
+      }
+
+      if (rememberMe) {
+        storage.set(STORAGE_KEYS.REMEMBER_ME, { username: email.trim(), rememberMe: true })
+      } else {
+        storage.remove(STORAGE_KEYS.REMEMBER_ME)
+      }
+
+      storage.set(STORAGE_KEYS.USER, appUser)
+      onLogin(appUser)
+    } catch (err) {
+      setError(err?.message || 'Beklenmeyen bir hata oluştu.')
+    } finally {
+      setLoading(false)
     }
-
-    // Set remember me
-    if (rememberMe) {
-      storage.set(STORAGE_KEYS.REMEMBER_ME, { username, rememberMe: true })
-    } else {
-      storage.remove(STORAGE_KEYS.REMEMBER_ME)
-    }
-
-    // Remove password before storing
-    const { password: _, ...userWithoutPassword } = user
-    storage.set(STORAGE_KEYS.USER, userWithoutPassword)
-
-    onLogin(userWithoutPassword)
   }
 
   const handleForgotPassword = () => {
     setShowForgotPassword(true)
     setTimeout(() => {
-      alert('Parola sıfırlama linki e-posta adresinize gönderildi!')
       setShowForgotPassword(false)
+      setError('Parola sıfırlama özelliği yakında eklenecektir.')
     }, 500)
   }
 
-  // Load remembered username
   useEffect(() => {
     const remembered = storage.get(STORAGE_KEYS.REMEMBER_ME)
-    if (remembered?.rememberMe) {
-      setUsername(remembered.username)
+    if (remembered?.rememberMe && remembered?.username) {
+      setEmail(remembered.username)
       setRememberMe(true)
     }
   }, [])
-
-  const [logoLoaded, setLogoLoaded] = useState(false)
-  const [logoError, setLogoError] = useState(false)
-
-  const handleLogoLoad = () => {
-    setLogoLoaded(true)
-    setLogoError(false)
-  }
-
-  const handleLogoError = () => {
-    setLogoError(true)
-    setLogoLoaded(false)
-  }
 
   return (
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
           <div className="login-logo-wrapper">
-            <img 
-              src="/logo.png" 
-              alt="Meltem Altıntaş Pro" 
-              className={`login-logo-img ${logoLoaded ? 'logo-loaded' : ''} ${logoError ? 'logo-error' : ''}`}
-              onLoad={handleLogoLoad}
-              onError={handleLogoError}
-              style={{ display: logoError ? 'none' : 'block' }}
-            />
-            {logoError && (
-              <span className="login-logo-fallback">Meltem Altıntaş Pro</span>
-            )}
+            <AppLogo imgClassName="login-logo-img" fallbackClassName="login-logo-fallback" />
           </div>
           <h1>
             <span className="brand-name">Meltem Altıntaş</span>
@@ -95,10 +92,10 @@ function Login({ onLogin }) {
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
               <input
-                type="text"
-                placeholder="Kullanıcı adı veya E-posta"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                placeholder="E-posta"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 autoFocus
               />
@@ -135,15 +132,18 @@ function Login({ onLogin }) {
               </button>
             </div>
 
-            <button type="submit" className="login-btn">
-              Giriş Yap
+            <button type="submit" className="login-btn" disabled={loading}>
+              {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
             </button>
 
-            <div className="login-demo">
-              <p>Demo Hesaplar:</p>
-              <p>Broker: meltem / 123456</p>
-              <p>Danışman: ahmet / 123456</p>
-            </div>
+            {onGoToSignup && (
+              <p className="login-signup-cta">
+                Hesabınız yok mu?{' '}
+                <button type="button" className="link-btn" onClick={onGoToSignup}>
+                  Kaydol
+                </button>
+              </p>
+            )}
           </form>
         ) : (
           <div className="forgot-password-form">

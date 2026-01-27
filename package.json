@@ -7,17 +7,26 @@
     "build": "vite build",
     "preview": "vite preview",
     "fetch:revy": "node scripts/fetchRevyWithLogin.js",
+    "revy-engine": "node revy-engine/index.js",
+    "revy-engine:fixtures": "node revy-engine/run-fixtures.js",
+    "crawler": "node scripts/crawler/index.js",
+    "crawler:fixtures": "node scripts/crawler/run-fixtures.js",
     "fix:abandoned": "node scripts/fixAbandonedWithImages.js",
     "fix:full": "node scripts/fixFullWithoutImages.js",
+    "backfill:photos": "node scripts/backfill-photos.mjs",
     "playwright:install": "playwright install chromium"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
+    "axios": "^1.13.3",
+    "axios-cookiejar-support": "^6.0.5",
+    "cheerio": "^1.2.0",
     "dotenv": "^17.2.3",
     "lucide-react": "^0.562.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "swiper": "^12.0.3",
+    "tough-cookie": "^6.0.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

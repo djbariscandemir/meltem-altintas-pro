@@ -3,52 +3,40 @@ import { Star, ChevronLeft, ChevronRight, MapPin, FileText } from 'lucide-react'
 import { formatPrice } from '../../utils/formatPrice'
 import { getCoverImageUrl } from '../../utils/getCoverImageUrl'
 import LogoPlaceholder from '../LogoPlaceholder'
+import EmptyState from '../EmptyState/EmptyState'
 import './GameMode.css'
-
-// Image component with logo fallback
-function ImageWithLogoFallback({ src, alt }) {
-  const [imageError, setImageError] = useState(false)
-  
-  if (imageError) {
-    return <LogoPlaceholder showText={false} />
-  }
-  
-  return (
-    <img 
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={() => setImageError(true)}
-    />
-  )
-}
 
 function GameMode({ listings, onSkip, onOpportunity, onDetail, onCall }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [queue, setQueue] = useState([])
+  const [imageError, setImageError] = useState(false)
 
   useEffect(() => {
     setQueue(listings)
     setCurrentIndex(0)
+    setImageError(false)
   }, [listings])
+
+  useEffect(() => {
+    // İlan değiştiğinde image error durumunu sıfırla
+    setImageError(false)
+  }, [currentIndex])
 
   const currentListing = queue[currentIndex]
 
   // Boş liste kontrolü
   if (!listings || listings.length === 0) {
-    return (
-      <div className="game-mode-empty">
-        <p>Henüz ilan bulunmuyor.</p>
-      </div>
-    )
+    return <EmptyState type="listings" />
   }
 
   // Current listing yoksa
   if (!currentListing) {
     return (
-      <div className="game-mode-empty">
-        <p>Tüm ilanlar görüntülendi.</p>
-      </div>
+      <EmptyState 
+        type="listings" 
+        customTitle="Tüm ilanlar görüntülendi"
+        customDescription="Baştan başlamak için sayfayı yenileyin"
+      />
     )
   }
 
@@ -80,24 +68,6 @@ function GameMode({ listings, onSkip, onOpportunity, onDetail, onCall }) {
     }
   }
 
-  if (!currentListing) {
-    return (
-      <div className="game-mode-empty">
-        <p>Henüz ilan bulunmuyor.</p>
-      </div>
-    )
-  }
-
-  // Development'ta debug logging
-  if (import.meta.env.DEV) {
-    console.debug('[GameMode] Listing render:', {
-      id: currentListing.id,
-      cover_image_url: currentListing.cover_image_url,
-      image_urls_length: Array.isArray(currentListing.image_urls) ? currentListing.image_urls.length : null
-    });
-  }
-
-  // Kapak fotoğrafı URL'ini belirle
   const coverImageUrl = getCoverImageUrl(currentListing)
 
   return (
@@ -110,10 +80,15 @@ function GameMode({ listings, onSkip, onOpportunity, onDetail, onCall }) {
           </div>
         )}
         <div className="game-card-image">
-          {coverImageUrl ? (
-            <ImageWithLogoFallback 
+          {coverImageUrl && !imageError ? (
+            <img
               src={coverImageUrl}
-              alt={currentListing.title || "İlan fotoğrafı"}
+              alt={currentListing.title || 'İlan fotoğrafı'}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              onError={() => {
+                if (import.meta.env.DEV) console.warn('[GameMode] Image failed to load:', coverImageUrl?.substring(0, 50))
+                setImageError(true)
+              }}
             />
           ) : (
             <LogoPlaceholder showText={false} />
@@ -136,18 +111,19 @@ function GameMode({ listings, onSkip, onOpportunity, onDetail, onCall }) {
             {currentListing.district && <span>{currentListing.district}</span>}
             {currentListing.district && currentListing.neighborhood && <span> / {currentListing.neighborhood}</span>}
           </div>
-          {((currentListing.property_category || currentListing.propertyCategory) || currentListing.source) && (
+          {(currentListing.property_type || currentListing.owner_type) && (
             <div className="game-card-meta">
-              {(currentListing.property_category || currentListing.propertyCategory) && (
+              {currentListing.property_type && (
                 <span className="game-card-category">
                   <FileText size={14} strokeWidth={2} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }} />
-                  {(currentListing.property_category || currentListing.propertyCategory)}
+                  {currentListing.property_type === 'konut' ? 'Konut' : 'Ticari'}
+                  {currentListing.property_subtype && ` · ${currentListing.property_subtype}`}
                 </span>
               )}
-              {currentListing.source && (
+              {currentListing.owner_type && (
                 <span className="game-card-source">
                   <MapPin size={14} strokeWidth={2} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }} />
-                  {currentListing.source}
+                  {currentListing.owner_type === 'mulk_sahibi' ? 'Mülk Sahibi' : 'Emlak Ofisi'}
                 </span>
               )}
             </div>

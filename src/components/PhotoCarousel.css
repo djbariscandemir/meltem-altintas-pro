@@ -1,0 +1,96 @@
+.photo-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--color-gray-50, #f9fafb);
+  touch-action: pan-y;
+}
+
+.photo-carousel-card {
+  border-radius: 16px;
+}
+
+.photo-carousel-detail {
+  border-radius: 20px;
+}
+
+.photo-carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(15, 23, 42, 0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+  z-index: 2;
+}
+
+.photo-carousel-arrow-left {
+  left: 8px;
+}
+
+.photo-carousel-arrow-right {
+  right: 8px;
+}
+
+.photo-carousel-arrow:hover {
+  background: rgba(15, 23, 42, 0.75);
+}
+
+.photo-carousel-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.photo-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.7);
+}
+
+.photo-carousel-dot-active {
+  width: 10px;
+  background: rgba(15, 23, 42, 0.95);
+}
+
+@media (max-width: 640px) {
+  .photo-carousel-arrow {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+  }
+
+  .photo-carousel-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .photo-carousel-dot-active {
+    width: 8px;
+  }
+}
+

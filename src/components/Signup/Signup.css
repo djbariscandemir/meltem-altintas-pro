@@ -1,0 +1,21 @@
+.signup-footer {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-gray-600, #4b5563);
+  margin: 16px 0 0;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary, #ea7e65);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.link-btn:hover {
+  color: var(--color-primary-dark, #d96d54);
+}

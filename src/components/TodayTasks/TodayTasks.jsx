@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { PartyPopper, Phone, FileText, Eye, AlertTriangle, CheckCircle2, Clock, MapPin, X } from 'lucide-react'
 import NoteSheet from '../Listings/NoteSheet'
+import { toast } from '../Toast/ToastContainer'
 import './TodayTasks.css'
 
 function TodayTasks({ user, tasks, listings, onUpdateTasks, onUpdateListings }) {
@@ -44,9 +45,7 @@ function TodayTasks({ user, tasks, listings, onUpdateTasks, onUpdateListings }) 
       return (isToday || isOverdueReminder) && !task.isCalled
     })
 
-    // Role-based filtering
-    if (user.role !== 'broker') {
-      // Consultant sees only their own tasks
+    if (user.role === 'user') {
       filtered = filtered.filter(task => 
         task.calledBy === null || task.calledBy === user.id
       )
@@ -114,8 +113,7 @@ function TodayTasks({ user, tasks, listings, onUpdateTasks, onUpdateListings }) 
       })
       onUpdateListings(updatedListings)
     }
-
-    console.log('Arama yapıldı:', task.listingTitle)
+    toast.success(`Arama kaydedildi: ${task.listingTitle}`)
   }
 
   const handleNote = (task) => {
@@ -155,6 +153,7 @@ function TodayTasks({ user, tasks, listings, onUpdateTasks, onUpdateListings }) 
       })
       onUpdateListings(updated)
       
+      toast.success('Not kaydedildi')
       setShowNoteSheet(false)
       setCurrentTaskForNote(null)
       setSelectedListing(null)
@@ -188,13 +187,7 @@ function TodayTasks({ user, tasks, listings, onUpdateTasks, onUpdateListings }) 
           </div>
         </div>
         
-        <div className="no-tasks-today">
-          <div className="empty-icon">
-            <PartyPopper size={48} strokeWidth={1.5} />
-          </div>
-          <p>Tüm görevler tamamlandı!</p>
-          <p className="empty-subtitle">Bugün aramanız gereken görev bulunmuyor.</p>
-        </div>
+        <EmptyState type="todayTasks" />
       </div>
     )
   }

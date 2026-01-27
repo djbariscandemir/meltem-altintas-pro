@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Clock, Phone } from 'lucide-react'
+import AppLogo from '../AppLogo/AppLogo'
 import Header from './Header'
 import Navigation from './Navigation'
 import ListingsView from '../Listings/ListingsView'
@@ -8,6 +10,7 @@ import Tasks from '../Tasks/Tasks'
 import TodayTasks from '../TodayTasks/TodayTasks'
 import Notes from '../Notes/Notes'
 import Profile from '../Profile/Profile'
+import BrokerPanel from '../BrokerPanel/BrokerPanel'
 import './Dashboard.css'
 
 const getTodayTasksCount = (tasks, user) => {
@@ -25,7 +28,7 @@ const getTodayTasksCount = (tasks, user) => {
     return (isToday || isOverdueReminder) && !task.isCalled
   })
 
-  if (user.role !== 'broker') {
+  if (user.role === 'user') {
     filtered = filtered.filter(task => 
       task.calledBy === null || task.calledBy === user.id
     )
@@ -41,6 +44,7 @@ const VIEWS = {
   NOTES: 'notes',
   BUYER_REQUESTS: 'buyer-requests',
   CUSTOM_STOCK: 'custom-stock',
+  BROKER_PANEL: 'broker-panel',
   PROFILE: 'profile'
 }
 
@@ -51,24 +55,13 @@ function Dashboard({
   buyerRequests, 
   notifications,
   onLogout,
+  onProfileUpdate,
   onUpdateListings,
   onUpdateTasks,
   onUpdateBuyerRequests,
   onUpdateNotifications
 }) {
   const [currentView, setCurrentView] = useState(VIEWS.LISTINGS)
-  const [logoLoaded, setLogoLoaded] = useState(false)
-  const [logoError, setLogoError] = useState(false)
-
-  const handleLogoLoad = () => {
-    setLogoLoaded(true)
-    setLogoError(false)
-  }
-
-  const handleLogoError = () => {
-    setLogoError(true)
-    setLogoLoaded(false)
-  }
 
   return (
     <div className="dashboard">
@@ -80,6 +73,7 @@ function Dashboard({
       />
       
       <Navigation 
+        user={user}
         currentView={currentView}
         onViewChange={setCurrentView}
         unreadNotifications={notifications.filter(n => !n.isRead).length}
@@ -90,20 +84,34 @@ function Dashboard({
         <div className="dashboard-welcome">
           <div className="welcome-content">
             <div className="welcome-logo-wrapper">
-              <img 
-                src="/logo.png" 
-                alt="Meltem Altıntaş Pro" 
-                className={`welcome-logo ${logoLoaded ? 'logo-loaded' : ''} ${logoError ? 'logo-error' : ''}`}
-                onLoad={handleLogoLoad}
-                onError={handleLogoError}
-                style={{ display: logoError ? 'none' : 'block' }}
-              />
-              {logoError && (
-                <span className="welcome-logo-fallback">Meltem Altıntaş Pro</span>
-              )}
+              <AppLogo imgClassName="welcome-logo" fallbackClassName="welcome-logo-fallback" />
             </div>
             <h2 className="welcome-title">Meltem Altıntaş Pro</h2>
             <p className="welcome-subtitle">Emlak yönetim sisteminize hoş geldiniz</p>
+          </div>
+        </div>
+      )}
+      
+      {currentView === VIEWS.TODAY_TASKS && (
+        <div className="dashboard-info-banner">
+          <div className="info-banner-content">
+            <Clock size={20} strokeWidth={2} />
+            <div>
+              <strong>Bugün Aranacaklar</strong>
+              <p>Bugün yapılması gereken arama görevleriniz burada görünür. Tüm görevler için &quot;Görevler&quot; sayfasına bakın.</p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {currentView === VIEWS.TASKS && (
+        <div className="dashboard-info-banner">
+          <div className="info-banner-content">
+            <Phone size={20} strokeWidth={2} />
+            <div>
+              <strong>Arama Görevleri</strong>
+              <p>Tüm arama görevlerinizi buradan görüntüleyebilir ve yönetebilirsiniz. Bekleyen, geciken ve tamamlanan görevleri filtreleyebilirsiniz.</p>
+            </div>
           </div>
         </div>
       )}
@@ -163,8 +171,12 @@ function Dashboard({
           />
         )}
 
+        {currentView === VIEWS.BROKER_PANEL && (
+          <BrokerPanel />
+        )}
+
         {currentView === VIEWS.PROFILE && (
-          <Profile user={user} />
+          <Profile user={user} onProfileUpdate={onProfileUpdate} />
         )}
       </main>
     </div>

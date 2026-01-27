@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { Bell } from 'lucide-react'
+import AppLogo from '../AppLogo/AppLogo'
 import NotificationsPanel from './NotificationsPanel'
 import './Header.css'
 
 function Header({ user, notifications, onUpdateNotifications, onLogout }) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
-  const [logoLoaded, setLogoLoaded] = useState(false)
-  const [logoError, setLogoError] = useState(false)
 
   const unreadCount = notifications.filter(n => !n.isRead).length
 
@@ -18,32 +17,12 @@ function Header({ user, notifications, onUpdateNotifications, onLogout }) {
     onUpdateNotifications(updated)
   }
 
-  const handleLogoLoad = () => {
-    setLogoLoaded(true)
-    setLogoError(false)
-  }
-
-  const handleLogoError = () => {
-    setLogoError(true)
-    setLogoLoaded(false)
-  }
-
   return (
     <header className="dashboard-header">
       <div className="header-content">
         <div className="header-logo-section">
           <div className="header-logo-wrapper">
-            <img 
-              src="/logo.png" 
-              alt="Meltem Altıntaş Pro" 
-              className={`logo-img ${logoLoaded ? 'logo-loaded' : ''} ${logoError ? 'logo-error' : ''}`}
-              onLoad={handleLogoLoad}
-              onError={handleLogoError}
-              style={{ display: logoError ? 'none' : 'block' }}
-            />
-            {logoError && (
-              <span className="logo-fallback">Meltem Altıntaş Pro</span>
-            )}
+            <AppLogo imgClassName="logo-img" fallbackClassName="logo-fallback" />
           </div>
           <h1 className="header-title">
             <span className="brand-name">Meltem Altıntaş</span>
@@ -75,7 +54,7 @@ function Header({ user, notifications, onUpdateNotifications, onLogout }) {
                 <div className="user-info">
                   <div className="user-name">{user.firstName} {user.lastName}</div>
                   <div className="user-role">
-                    {user.role === 'broker' ? 'Broker' : 'Danışman'}
+                    {user.role === 'admin' ? 'Admin' : user.role === 'broker' ? 'Broker' : 'Danışman'}
                   </div>
                 </div>
                 <button className="user-menu-item" onClick={onLogout}>

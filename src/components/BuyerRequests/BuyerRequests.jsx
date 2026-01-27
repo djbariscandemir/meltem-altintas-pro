@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import BuyerRequestForm from './BuyerRequestForm'
 import { CheckCircle2, X } from 'lucide-react'
+import EmptyState from '../EmptyState/EmptyState'
 import './BuyerRequests.css'
 
 function BuyerRequests({ user, buyerRequests, listings, onUpdateBuyerRequests }) {
@@ -83,9 +84,7 @@ function BuyerRequests({ user, buyerRequests, listings, onUpdateBuyerRequests })
 
       <div className="requests-list">
         {filteredRequests.length === 0 ? (
-          <div className="no-requests">
-            <p>Talep bulunmuyor</p>
-          </div>
+          <EmptyState type="buyerRequests" />
         ) : (
           filteredRequests.map(request => (
             <div 

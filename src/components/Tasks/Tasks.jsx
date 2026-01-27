@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { AlertTriangle, Clock, CheckCircle2, Check } from 'lucide-react'
 import { updateNote } from '../../services/notesRepository'
+import { toast } from '../Toast/ToastContainer'
 import './Tasks.css'
 
 function Tasks({ user, tasks, listings, onUpdateTasks }) {
@@ -26,15 +27,21 @@ function Tasks({ user, tasks, listings, onUpdateTasks }) {
     return 'pending'
   }
 
-  const filteredTasks = useMemo(() => {
-    let filtered = tasks
+  const baseTasks = useMemo(() => {
+    if (user.role === 'user') {
+      return tasks.filter(t => t.calledBy === null || t.calledBy === user.id)
+    }
+    return tasks
+  }, [tasks, user.role, user.id])
 
+  const filteredTasks = useMemo(() => {
+    let filtered = baseTasks
     if (filter === 'pending') {
-      filtered = tasks.filter(t => !t.isCalled && new Date(t.dueDate) >= new Date())
+      filtered = baseTasks.filter(t => !t.isCalled && new Date(t.dueDate) >= new Date())
     } else if (filter === 'overdue') {
-      filtered = tasks.filter(t => !t.isCalled && new Date(t.dueDate) < new Date())
+      filtered = baseTasks.filter(t => !t.isCalled && new Date(t.dueDate) < new Date())
     } else if (filter === 'completed') {
-      filtered = tasks.filter(t => t.isCalled)
+      filtered = baseTasks.filter(t => t.isCalled)
     }
 
     return filtered.sort((a, b) => {
@@ -43,7 +50,7 @@ function Tasks({ user, tasks, listings, onUpdateTasks }) {
       }
       return new Date(b.dueDate) - new Date(a.dueDate)
     })
-  }, [tasks, filter])
+  }, [baseTasks, filter])
 
   const handleTaskComplete = async (taskId) => {
     const task = tasks.find(t => t.id === taskId)
@@ -72,8 +79,12 @@ function Tasks({ user, tasks, listings, onUpdateTasks }) {
           : t
       )
       onUpdateTasks(updated)
+
+      const listing = listings.find(l => l.id === task.listingId)
+      toast.success(`Görev tamamlandı: ${listing?.title || 'İlan'}`)
     } catch (error) {
       console.error('[Tasks] ❌ handleTaskComplete ERROR:', error)
+      toast.error('Görev tamamlanırken bir hata oluştu')
     }
   }
 
@@ -100,36 +111,34 @@ function Tasks({ user, tasks, listings, onUpdateTasks }) {
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
             onClick={() => setFilter('all')}
           >
-            Tümü ({tasks.length})
+            Tümü ({baseTasks.length})
           </button>
           <button 
             className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
             onClick={() => setFilter('pending')}
           >
-            Bekleyen ({tasks.filter(t => !t.isCalled && new Date(t.dueDate) >= new Date()).length})
+            Bekleyen ({baseTasks.filter(t => !t.isCalled && new Date(t.dueDate) >= new Date()).length})
           </button>
           <button 
             className={`filter-btn ${filter === 'overdue' ? 'active' : ''}`}
             onClick={() => setFilter('overdue')}
           >
             <AlertTriangle size={16} strokeWidth={2} style={{ marginRight: '6px' }} />
-            Geciken ({tasks.filter(t => !t.isCalled && new Date(t.dueDate) < new Date()).length})
+            Geciken ({baseTasks.filter(t => !t.isCalled && new Date(t.dueDate) < new Date()).length})
           </button>
           <button 
             className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
             onClick={() => setFilter('completed')}
           >
             <CheckCircle2 size={16} strokeWidth={2} style={{ marginRight: '6px' }} />
-            Tamamlanan ({tasks.filter(t => t.isCalled).length})
+            Tamamlanan ({baseTasks.filter(t => t.isCalled).length})
           </button>
         </div>
       </div>
 
       <div className="tasks-list">
         {filteredTasks.length === 0 ? (
-          <div className="no-tasks">
-            <p>Görev bulunmuyor</p>
-          </div>
+          <EmptyState type="tasks" />
         ) : (
           filteredTasks.map(task => {
             const status = getTaskStatus(task)

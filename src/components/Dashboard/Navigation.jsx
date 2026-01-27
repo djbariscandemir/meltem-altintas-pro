@@ -1,15 +1,18 @@
-import { Home, Clock, Phone, FileText, Users, Star, User } from 'lucide-react'
+import { Home, Clock, Phone, FileText, Users, Star, User, BarChart3 } from 'lucide-react'
 import './Navigation.css'
 
-function Navigation({ currentView, onViewChange, unreadNotifications, todayTasksCount = 0 }) {
+function Navigation({ user, currentView, onViewChange, unreadNotifications, todayTasksCount = 0 }) {
+  const showBrokerPanel = user && (user.role === 'broker' || user.role === 'admin')
+
   const menuItems = [
-    { id: 'listings', icon: Home, label: 'İlanlar' },
-    { id: 'today-tasks', icon: Clock, label: 'Bugün', badge: todayTasksCount },
-    { id: 'tasks', icon: Phone, label: 'Görevler' },
-    { id: 'notes', icon: FileText, label: 'Notlar' },
-    { id: 'buyer-requests', icon: Users, label: 'Alıcılar' },
-    { id: 'custom-stock', icon: Star, label: 'Özel Stok' },
-    { id: 'profile', icon: User, label: 'Profil' }
+    { id: 'listings', icon: Home, label: 'İlanlar', description: 'Tüm ilanları görüntüle' },
+    { id: 'today-tasks', icon: Clock, label: 'Bugün', badge: todayTasksCount, description: 'Bugün yapılacak görevler' },
+    { id: 'tasks', icon: Phone, label: 'Görevler', description: 'Tüm arama görevleri' },
+    { id: 'notes', icon: FileText, label: 'Notlar', description: 'İlan notları' },
+    { id: 'buyer-requests', icon: Users, label: 'Alıcılar', description: 'Alıcı talepleri' },
+    { id: 'custom-stock', icon: Star, label: 'Özel Stok', description: 'Özel stok ilanları' },
+    ...(showBrokerPanel ? [{ id: 'broker-panel', icon: BarChart3, label: 'Broker Paneli', description: 'Haftalık performans' }] : []),
+    { id: 'profile', icon: User, label: 'Profil', description: 'Hesap bilgileri' }
   ]
 
   return (
