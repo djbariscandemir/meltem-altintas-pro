@@ -4,6 +4,7 @@ import AppLogo from '../AppLogo/AppLogo'
 import Header from './Header'
 import Navigation from './Navigation'
 import ListingsView from '../Listings/ListingsView'
+import AddListing from '../AddListing/AddListing'
 import BuyerRequests from '../BuyerRequests/BuyerRequests'
 import CustomStock from '../CustomStock/CustomStock'
 import Tasks from '../Tasks/Tasks'
@@ -39,6 +40,7 @@ const getTodayTasksCount = (tasks, user) => {
 
 const VIEWS = {
   LISTINGS: 'listings',
+  ADD_LISTING: 'add-listing',
   TODAY_TASKS: 'today-tasks',
   TASKS: 'tasks',
   NOTES: 'notes',
@@ -125,6 +127,10 @@ function Dashboard({
             onUpdateListings={onUpdateListings}
             onUpdateTasks={onUpdateTasks}
           />
+        )}
+
+        {currentView === VIEWS.ADD_LISTING && (
+          <AddListing onSuccess={() => onUpdateListings()} />
         )}
 
         {currentView === VIEWS.TODAY_TASKS && (

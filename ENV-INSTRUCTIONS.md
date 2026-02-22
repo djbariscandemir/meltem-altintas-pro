@@ -11,6 +11,12 @@ Proje root klasöründe (package.json'ın yanında) `.env` dosyası oluşturun.
 ```env
 VITE_SUPABASE_URL=https://akidlfqugftljfuhnjxn.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFraWRsZnF1Z2Z0bGpmdWhuanhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2NjcwMDMsImV4cCI6MjA4NDI0MzAwM30.VpxOa_tAXu1uyVUV6b3F-PQnLpaGC9alsVMr2F0V05k
+
+# Manuel ilan parse + Revy otomatik login için
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+REVY_PHONE=5xxxxxxxxx
+REVY_PASSWORD=your-password
+# Alternatif: REVY_EMAIL kullanılabilir (REVY_PHONE yoksa)
 ```
 
 ## Önemli Notlar

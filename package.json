@@ -14,6 +14,7 @@
     "fix:abandoned": "node scripts/fixAbandonedWithImages.js",
     "fix:full": "node scripts/fixFullWithoutImages.js",
     "backfill:photos": "node scripts/backfill-photos.mjs",
+    "parse:manual": "node scripts/parseManualListings.js",
     "playwright:install": "playwright install chromium"
   },
   "dependencies": {

@@ -148,6 +148,11 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Parse durumu: İşleniyor / Hazır / Hata */
+.parse-status-badge.parse-status-pending { background: #f59e0b; color: #fff; }
+.parse-status-badge.parse-status-ok { background: #10b981; color: #fff; }
+.parse-status-badge.parse-status-failed { background: #ef4444; color: #fff; }
+
 .list-card-title {
   font-size: 19px;
   font-weight: var(--font-weight-semibold);

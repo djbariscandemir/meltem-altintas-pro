@@ -51,6 +51,20 @@ function App() {
     loadData()
   }, [])
 
+  // Supabase Realtime: listings tablosu değişince (parse worker vb.) listeyi yenile
+  useEffect(() => {
+    if (!user) return
+    const channel = supabase
+      .channel('listings-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'listings' }, () => {
+        loadData()
+      })
+    channel.subscribe()
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [user])
+
   const loadData = async () => {
     try {
       setLoading(true)

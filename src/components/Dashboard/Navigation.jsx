@@ -1,4 +1,4 @@
-import { Home, Clock, Phone, FileText, Users, Star, User, BarChart3 } from 'lucide-react'
+import { Home, Clock, Phone, FileText, Users, Star, User, BarChart3, PlusCircle } from 'lucide-react'
 import './Navigation.css'
 
 function Navigation({ user, currentView, onViewChange, unreadNotifications, todayTasksCount = 0 }) {
@@ -6,6 +6,7 @@ function Navigation({ user, currentView, onViewChange, unreadNotifications, toda
 
   const menuItems = [
     { id: 'listings', icon: Home, label: 'İlanlar', description: 'Tüm ilanları görüntüle' },
+    ...(showBrokerPanel ? [{ id: 'add-listing', icon: PlusCircle, label: 'İlan Ekle', description: 'Revy linki ile manuel ilan ekle' }] : []),
     { id: 'today-tasks', icon: Clock, label: 'Bugün', badge: todayTasksCount, description: 'Bugün yapılacak görevler' },
     { id: 'tasks', icon: Phone, label: 'Görevler', description: 'Tüm arama görevleri' },
     { id: 'notes', icon: FileText, label: 'Notlar', description: 'İlan notları' },

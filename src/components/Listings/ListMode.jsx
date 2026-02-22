@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { Phone, Star, Eye, FileText, MapPin, Tag } from 'lucide-react'
 import { formatPrice } from '../../utils/formatPrice'
+import { getParseStatusLabel, getParseStatusClass } from '../../utils/parseStatusLabel'
 import PhotoCarousel from '../PhotoCarousel'
 import EmptyState from '../EmptyState/EmptyState'
 import './ListMode.css'
@@ -78,6 +78,11 @@ function ListingCard({ listing, photos, visibleNotes, onOpportunity, onDetail, o
           )}
           {listing.property_type && (
             <span className="type-badge">{listing.property_type === 'konut' ? 'Konut' : 'Ticari'}</span>
+          )}
+          {listing.parse_status && getParseStatusLabel(listing.parse_status) && (
+            <span className={`type-badge parse-status-badge ${getParseStatusClass(listing.parse_status)}`}>
+              {getParseStatusLabel(listing.parse_status)}
+            </span>
           )}
         </div>
         

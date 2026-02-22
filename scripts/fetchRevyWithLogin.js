@@ -14,6 +14,7 @@ import { createClient } from "@supabase/supabase-js";
 import { existsSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import dotenv from "dotenv";
+import { ensureRevySession } from "./crawler/ensureRevySession.js";
 
 // ========== ENVIRONMENT VARIABLES ==========
 // .env dosyasından değişkenleri yükle
@@ -1807,16 +1808,7 @@ async function runBatchSession(state) {
   const page = await context.newPage();
 
   try {
-    // Login (FORCE_RUN bile olsa login zorunlu)
-    // hasStorageState parametresi ile login butonu kontrolü yapılacak
-    const loginSuccess = await login(page, hasStorageState);
-    if (!loginSuccess) {
-      throw new Error('LOGIN_FAILED: Login başarısız');
-    }
-    
-    // Login başarılıysa (yeni login veya storageState ile) storageState kaydet
-    // Eğer zaten login durumundaysa da state'i güncelle
-    await saveStorageState(context, STORAGE_STATE_PATH);
+    await ensureRevySession(page, { storageStatePath: STORAGE_STATE_PATH });
     await randomDelay(2, 4);
 
     // Partial ilanları öncelikli işle

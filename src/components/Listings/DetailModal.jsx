@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { X, Phone, FileText, ExternalLink, Lock } from 'lucide-react'
 import NoteSheet from './NoteSheet'
 import { formatPrice } from '../../utils/formatPrice'
+import { getParseStatusLabel, getParseStatusClass } from '../../utils/parseStatusLabel'
 import PhotoCarousel from '../PhotoCarousel'
 import './DetailModal.css'
 
@@ -142,6 +143,17 @@ function DetailModal({ user, listing, onClose, onCall, onNoteSave }) {
               <div className="detail-info-item">
                 <span className="detail-label">Brüt m²</span>
                 <span className="detail-value">{listing.gross_area}</span>
+              </div>
+            )}
+            {listing.parse_status && getParseStatusLabel(listing.parse_status) && (
+              <div className="detail-info-item">
+                <span className="detail-label">Parse durumu</span>
+                <span className={`detail-value parse-status-badge ${getParseStatusClass(listing.parse_status)}`}>
+                  {getParseStatusLabel(listing.parse_status)}
+                  {listing.parse_error && (
+                    <span className="parse-error-text" title={listing.parse_error}> ({listing.parse_error.slice(0, 30)}…)</span>
+                  )}
+                </span>
               </div>
             )}
           </div>
